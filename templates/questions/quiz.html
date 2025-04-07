@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}{{ topic.name }} Quiz{% endblock %}
+
+{% block content %}
+<div class="quiz-container">
+    <div class="question-box">
+        <h2>{{ topic.name }} - Question {{ current_question }} of {{ total_questions }}</h2>
+        <div class="progress-bar">
+            <div class="progress" style="width: {{ progress_percentage }}%;"></div>
+        </div>
+        <p>{{ question.text }}</p>
+        <form method="POST">
+            {% csrf_token %}
+            <div class="options">
+                {% for answer in answers %}
+                <label class="option {% if result and answer.id in selected_answer_ids %} {% if answer.is_correct %}correct{% else %}incorrect{% endif %} {% endif %}">
+                        <input type="{% if question.allow_multiple %}checkbox{% else %}radio{% endif %}"
+                               name="answer" value="{{ answer.id }}"
+                               {% if answer.id in selected_answer_ids %}checked{% endif %}>
+                        {{ answer.text }}
+                    </label><br>
+                {% endfor %}
+            </div>
+            <button type="submit" name="check" class="btn">Check</button>
+            <button type="submit" name="next" class="btn">Next</button>
+            {% if result %}
+                <span class="result">{{ result }}</span>
+            {% endif %}
+        </form>
+    </div>
+</div>
+{% endblock %}

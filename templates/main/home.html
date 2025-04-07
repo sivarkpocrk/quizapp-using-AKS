@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<h2>Welcome to QuizApp</h2>
+<p>Start your quiz journey now!</p>
+
+{% if user.is_authenticated %}
+    <p>Hello, {{ user.username }}! Ready for the next quiz?</p>
+{% else %}
+    <p>You are currently logged in as a Guest.</p>
+    <a href="{% url 'account_signup' %}" class="start-btn">Sign Up</a>
+{% endif %}
+
+<div class="quiz-topics">
+    <h3>Available Quiz Topics:</h3>
+    <ul>
+        {% for topic in quiz_topics %}
+            <li>
+                <a href="{% url 'quiz' topic.id %}">{{ topic.name }}</a>
+            </li>
+        {% empty %}
+            <li>No quizzes available at the moment.</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

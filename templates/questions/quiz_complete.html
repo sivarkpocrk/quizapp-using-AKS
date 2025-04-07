@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block title %}Quiz Complete{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>Quiz Complete!</h2>
+    <p>Congratulations on completing the quiz for {{ topic.name }}!</p>
+    <p>Feel free to try other quizzes or review your answers.</p>
+    <a href="{% url 'home' %}" class="start-btn">Go to Home</a>
+</div>
+{% endblock %}
