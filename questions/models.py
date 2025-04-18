@@ -9,14 +9,18 @@ class QuizTopic(models.Model):
     def __str__(self):
         return self.name
 
+
 class Question(models.Model):
     topic = models.ForeignKey(QuizTopic, on_delete=models.CASCADE, related_name='questions')
+    question_number = models.PositiveIntegerField(null=True, blank=True)  # ✅ New field
     text = models.CharField(max_length=255)
-    allow_multiple = models.BooleanField(default=False)  # New field
+    allow_multiple = models.BooleanField(default=False)
     created_at = models.DateTimeField(default=timezone.now)
+    correct_answer_count = models.IntegerField(null=True, blank=True)
 
     def __str__(self):
-        return self.text
+        return f"Q{self.question_number}: {self.text}" if self.question_number else self.text
+
 
 class Answer(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='answers')
@@ -25,3 +29,11 @@ class Answer(models.Model):
 
     def __str__(self):
         return f"{self.text} (Correct: {self.is_correct})"
+
+
+class Comment(models.Model):
+    question = models.OneToOneField(Question, on_delete=models.CASCADE, related_name='comment')
+    text = models.TextField()
+
+    def __str__(self):
+        return f"Comment for Q{self.question.question_number or self.question.id}"
