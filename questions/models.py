@@ -17,6 +17,7 @@ class Question(models.Model):
     allow_multiple = models.BooleanField(default=False)
     created_at = models.DateTimeField(default=timezone.now)
     correct_answer_count = models.IntegerField(null=True, blank=True)
+    has_correct_answer = models.BooleanField(default=False)
 
     def __str__(self):
         return f"Q{self.question_number}: {self.text}" if self.question_number else self.text

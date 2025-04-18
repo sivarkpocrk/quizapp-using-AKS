@@ -11,9 +11,9 @@ class QuizTopicAdmin(admin.ModelAdmin):
 class QuestionAdmin(admin.ModelAdmin):
     list_display = (
         'id', 'question_number', 'text', 'topic',
-        'allow_multiple', 'correct_answer_count', 'created_at'
+        'allow_multiple', 'has_correct_answer', 'correct_answer_count', 'created_at'
     )
-    list_filter = ('topic', 'allow_multiple', 'created_at')  # ✅ Sidebar filters
+    list_filter = ('topic', 'allow_multiple', 'has_correct_answer', 'created_at')  # ✅ Sidebar filters
     search_fields = ('question_number', 'text', 'topic__name')  # 🔍 Search bar
     ordering = ('question_number',)  # 📊 Order by question number
 

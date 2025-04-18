@@ -9,7 +9,7 @@
         <div class="progress-bar">
             <div class="progress" style="width: {{ progress_percentage }}%;"></div>
         </div>
-        <p>{{ question.text }}</p>
+        <p>{{ question.text |safe }}</p>
         <form method="POST">
             {% csrf_token %}
             <div class="options">
