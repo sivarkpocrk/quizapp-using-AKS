@@ -1,3 +1,4 @@
+/* === Base Styles === */
 body {
     font-family: Arial, sans-serif;
     background-color: #f4f4f4;
@@ -5,6 +6,7 @@ body {
     padding: 0;
 }
 
+/* === Navigation Bar === */
 .navbar {
     background-color: #0056b3;
     color: white;
@@ -12,10 +14,15 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-bottom: 10px;
+}
+
+.nav-links {
+    display: flex;
+    gap: 20px;
 }
 
 .nav-links a, .user-info {
-    margin: 0 10px;
     color: white;
     text-decoration: none;
 }
@@ -28,9 +35,10 @@ body {
     font-weight: bold;
 }
 
+/* === Page Container === */
 .container {
     max-width: 800px;
-    margin: auto;
+    margin: 20px auto;
     background-color: #fff;
     padding: 20px;
     border-radius: 5px;
@@ -41,16 +49,106 @@ h2, p {
     color: #0056b3;
 }
 
-.start-btn {
+/* === Buttons === */
+.start-btn, .btn {
     display: inline-block;
     background-color: #0056b3;
     color: white;
     padding: 10px 20px;
-    margin: 10px 0;
+    margin: 10px 5px 0 0;
     border-radius: 5px;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+}
+
+.start-btn:hover, .btn:hover {
+    background-color: #004080;
+}
+
+/* === Quiz Container === */
+.quiz-container {
+    margin-top: 15px;
+}
+
+.quiz-topics {
+    padding: 15px;
+    margin-top: 15px;
+    background-color: #e0e0e0;
+    border-radius: 5px;
+}
+
+.quiz-topics h3 {
+    margin-bottom: 10px;
+}
+
+.quiz-topics a {
+    color: #0056b3;
     text-decoration: none;
 }
 
-.start-btn:hover {
-    background-color: #004080;
+.quiz-topics a:hover {
+    text-decoration: underline;
+}
+
+/* === Answer Options === */
+.option {
+    display: block;
+    padding: 5px;
+    margin: 5px 0;
+    border-radius: 4px;
+}
+
+.option.correct {
+    background-color: #d4edda;
+    color: #155724;
+    border-left: 5px solid #28a745;
+}
+
+.option.incorrect {
+    background-color: #f8d7da;
+    color: #721c24;
+    border-left: 5px solid #dc3545;
+}
+
+.option.missed {
+    background-color: #fff3cd;
+    color: #856404;
+    border-left: 5px solid #ffc107;
+}
+
+/* === Result Message === */
+.result {
+    font-weight: bold;
+    margin-top: 15px;
+    font-size: 1.1em;
+    color: #333;
+}
+
+/* === Progress Bar === */
+.progress-bar {
+    background-color: #e0e0e0;
+    border-radius: 5px;
+    overflow: hidden;
+    height: 20px;
+    margin: 10px 0 20px;
+}
+
+.progress {
+    background-color: #007bff;
+    height: 100%;
+    transition: width 0.4s ease;
+}
+
+.explanation {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #eef2f7;
+    border-left: 5px solid #007bff;
+    border-radius: 4px;
+}
+
+.explanation h4 {
+    margin: 0 0 8px 0;
+    color: #0056b3;
 }

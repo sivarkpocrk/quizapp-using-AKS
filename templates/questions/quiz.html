@@ -9,12 +9,20 @@
         <div class="progress-bar">
             <div class="progress" style="width: {{ progress_percentage }}%;"></div>
         </div>
-        <p>{{ question.text |safe }}</p>
+        <p>{{ question.text | safe }}</p>
         <form method="POST">
             {% csrf_token %}
             <div class="options">
                 {% for answer in answers %}
-                <label class="option {% if result and answer.id in selected_answer_ids %} {% if answer.is_correct %}correct{% else %}incorrect{% endif %} {% endif %}">
+                    <label class="option
+                        {% if result %}
+                            {% if answer.id in selected_answer_ids %}
+                                {% if answer.is_correct %}correct{% else %}incorrect{% endif %}
+                            {% elif answer.id in missed_answer_ids %}
+                                missed
+                            {% endif %}
+                        {% endif %}
+                    ">
                         <input type="{% if question.allow_multiple %}checkbox{% else %}radio{% endif %}"
                                name="answer" value="{{ answer.id }}"
                                {% if answer.id in selected_answer_ids %}checked{% endif %}>
@@ -22,10 +30,19 @@
                     </label><br>
                 {% endfor %}
             </div>
+
             <button type="submit" name="check" class="btn">Check</button>
             <button type="submit" name="next" class="btn">Next</button>
+
             {% if result %}
-                <span class="result">{{ result }}</span>
+                <div class="result">{{ result }}</div>
+            {% endif %}
+
+            {% if comment_text %}
+                <div class="explanation">
+                    <h4>Explanation:</h4>
+                    <p>{{ comment_text|linebreaks }}</p>
+                </div>
             {% endif %}
         </form>
     </div>

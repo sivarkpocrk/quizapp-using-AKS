@@ -11,6 +11,7 @@
             <a href="{% url 'home' %}">Home</a>
             <a href="{% url 'quiz' 1 %}">Quiz</a>
             {% if user.is_authenticated %}
+                <a href="{% url 'analytics_dashboard' %}">📈 My Analytics</a>
                 <a href="{% url 'account_logout' %}">Sign Out</a>
             {% else %}
                 <a href="{% url 'account_login' %}">Sign In</a>

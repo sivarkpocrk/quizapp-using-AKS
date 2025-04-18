@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}My Quiz Analytics{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>📊 My Quiz Analytics</h2>
+    <table>
+        <tr>
+            <th>Topic</th>
+            <th>Score</th>
+            <th>Date Taken</th>
+        </tr>
+        {% for attempt in attempts %}
+        <tr>
+            <td>{{ attempt.topic.name }}</td>
+            <td>{{ attempt.score }}</td>
+            <td>{{ attempt.date_taken|date:"Y-m-d H:i" }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="3">No attempts yet.</td></tr>
+        {% endfor %}
+    </table>
+</div>
+{% endblock %}

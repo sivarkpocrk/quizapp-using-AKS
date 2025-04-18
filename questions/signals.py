@@ -6,10 +6,17 @@ def update_question_correct_info(question):
     # Count how many answers are marked correct
     correct_count = question.answers.filter(is_correct=True).count()
 
-    # Update both fields
+    # Automatically set allow_multiple based on correct answers
     question.has_correct_answer = correct_count > 0
     question.correct_answer_count = correct_count
-    question.save(update_fields=['has_correct_answer', 'correct_answer_count'])
+    question.allow_multiple = correct_count > 1
+
+    # Save updated fields
+    question.save(update_fields=[
+        'has_correct_answer',
+        'correct_answer_count',
+        'allow_multiple'
+    ])
 
 @receiver(post_save, sender=Answer)
 def update_question_on_answer_save(sender, instance, **kwargs):

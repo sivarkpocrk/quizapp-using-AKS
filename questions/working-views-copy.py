@@ -19,39 +19,13 @@ def quiz(request, topic_id):
         request.session['correct_count'] = 0  # Reset score at start
 
     if current_index >= total_questions:
+        # Quiz completed
         score = request.session.get('correct_count', 0)
         percentage = int((score / total_questions) * 100) if total_questions else 0
 
-        # ✅ Save the quiz attempt if user is logged in
-        if request.user.is_authenticated:
-            attempt = UserQuizAttempt.objects.create(
-                user=request.user,
-                topic=topic,
-                score=score
-            )
-
-            for q in questions:
-                submitted_ids = request.session.get(f"question_{q.id}_selected", [])
-                for ans_id in submitted_ids:
-                    try:
-                        answer_obj = Answer.objects.get(id=ans_id)
-                        is_correct = answer_obj.is_correct
-                        UserAnswer.objects.create(
-                            attempt=attempt,
-                            question=q,
-                            answer=answer_obj,
-                            is_correct=is_correct
-                        )
-                    except Answer.DoesNotExist:
-                        continue
-
-        # ✅ Clean up session
+        # Clear session for next quiz
         request.session.pop('current_question', None)
         request.session.pop('correct_count', None)
-
-        # Optionally clean up stored selections
-        for q in questions:
-            request.session.pop(f"question_{q.id}_selected", None)
 
         return render(request, 'questions/quiz_summary.html', {
             'topic': topic,
