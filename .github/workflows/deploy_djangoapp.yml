@@ -91,11 +91,24 @@ jobs:
           sudo usermod -aG docker $VM_USER
         EOF
 
-    - name: 📦 Copy App Files to Azure VM
-      run: |
-        rsync -avz -e "ssh -o StrictHostKeyChecking=no -i ~/.ssh/quizapp_key" \
-          --exclude='venv' --exclude='.git' \
-          ./ $VM_USER@$VM_IP:/home/$VM_USER/quizapp
+    # - name: 📦 Copy App Files to Azure VM
+    #   run: |
+    #     rsync -avz -e "ssh -o StrictHostKeyChecking=no -i ~/.ssh/quizapp_key" \
+    #       --exclude='venv' --exclude='.git' \
+    #       ./ $VM_USER@$VM_IP:/home/$VM_USER/quizapp
+    #       - name: 📥 Clone Repository on Azure VM
+    #       run: |
+    #         ssh -o StrictHostKeyChecking=no -i ~/.ssh/quizapp_key $VM_USER@$VM_IP bash <<EOF
+    #           cd /home/$VM_USER
+    #           if [ -d "quizapp" ]; then
+    #             cd quizapp
+    #             git pull origin main
+    #           else
+    #             git clone https://github.com/YOUR_USERNAME/YOUR_REPO.git quizapp
+    #             cd quizapp
+    #           fi
+    #     EOF
+
 
     - name: 🚀 Deploy Docker Containers
       run: |
