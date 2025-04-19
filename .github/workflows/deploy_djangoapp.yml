@@ -47,7 +47,7 @@ jobs:
         az vm create \
           --resource-group $RESOURCE_GROUP \
           --name $LINUX_VM_NAME \
-          --image UbuntuLTS \
+          --image Canonical:0001-com-ubuntu-server-jammy:22_04-lts-gen2:latest \
           --admin-username $VM_USER \
           --authentication-type ssh \
           --ssh-key-value "${{ secrets.AZURE_VM_SSH_PUB_KEY }}" \
