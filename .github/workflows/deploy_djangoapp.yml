@@ -46,13 +46,14 @@ jobs:
         echo "EOF" >> $GITHUB_ENV
         echo "PUBLIC_KEY=$(cat ~/.ssh/quizapp_key.pub)" >> $GITHUB_ENV
 
-    - name: 📦 Upload SSH Keys as Artifact
-      uses: actions/upload-artifact@v3
+    - name: 📎 Upload SSH Key Pair
+      uses: actions/upload-artifact@main
       with:
-        name: ssh-keys
+        name: ssh-key-pair
         path: |
           ~/.ssh/quizapp_key
           ~/.ssh/quizapp_key.pub
+        retention-days: 1
 
 
     - name: 🏗️ Create Resource Group
