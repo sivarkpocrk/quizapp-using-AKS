@@ -1,0 +1,55 @@
+name: Destroy deploy and setup
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        type: choice
+        description: Which environment to remove AWS resources for?
+        options:
+          - staging
+          - prod
+
+jobs:
+  destroy:
+    name: Destroy
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # Destroy infrastructure under the deploy folder
+      - name: Terraform Destroy (Deploy)
+        env:
+          AWS_ACCESS_KEY_ID: ${{ vars.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: |
+          export TF_WORKSPACE=${{ github.event.inputs.environment }}
+          cd infra/
+          docker compose run --rm terraform -chdir=deploy/ init
+          docker compose run --rm terraform -chdir=deploy/ workspace select $TF_WORKSPACE || terraform workspace new $TF_WORKSPACE
+          docker compose run --rm terraform -chdir=deploy/ destroy -auto-approve
+
+      # Destroy infrastructure under the setup folder
+      - name: Terraform Destroy (Setup)
+        env:
+          AWS_ACCESS_KEY_ID: ${{ vars.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: |
+          export TF_WORKSPACE=${{ github.event.inputs.environment }}
+          cd infra/
+          docker compose run --rm terraform -chdir=setup/ init
+          docker compose run --rm terraform -chdir=setup/ workspace select $TF_WORKSPACE || terraform workspace new $TF_WORKSPACE
+          docker compose run --rm terraform -chdir=setup/ destroy -auto-approve
+
+      # Cleanup Terraform Workspace after destruction
+      - name: Cleanup Workspace
+        env:
+          TF_WORKSPACE: ${{ github.event.inputs.environment }}
+        run: |
+          cd infra/deploy
+          terraform workspace select default || true
+          terraform workspace delete $TF_WORKSPACE || true
+          cd ../setup
+          terraform workspace select default || true
+          terraform workspace delete $TF_WORKSPACE || true

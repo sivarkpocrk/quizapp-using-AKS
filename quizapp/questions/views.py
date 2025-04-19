@@ -81,7 +81,8 @@ def quiz(request, topic_id):
         if 'check' in request.POST:
             if selected_set == correct_set:
                 result = "✅ Correct!"
-                request.session['correct_count'] += 1
+                # request.session['correct_count'] += 1
+                request.session['correct_count'] = request.session.get('correct_count', 0) + 1
             elif selected_set & correct_set:
                 missed_answer_ids = list(correct_set - selected_set)
                 result = f"⚠️ Partially correct. Missed {len(missed_answer_ids)} correct answer(s)."

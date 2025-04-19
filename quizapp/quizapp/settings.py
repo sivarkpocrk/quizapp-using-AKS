@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+import socket
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,12 +22,28 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = os.environ.get('SECRET_KEY', 'changeme')
+
 SECRET_KEY = 'django-insecure-09r61b=!87jhzx3f7oxtqwgzgsvize%&*a$dq8+kz#h2p4%ii%'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+#DEBUG = True
+DEBUG = bool(int(os.environ.get('DEBUG', 0)))
 
+# ALLOWED_HOSTS = ["127.0.0.1"]
 ALLOWED_HOSTS = []
+ALLOWED_HOSTS.extend(
+    filter(
+        None,
+        os.environ.get('ALLOWED_HOSTS', '').split(','),
+    )
+)
+
+try:
+    hostname_ip = socket.gethostbyname(socket.gethostname())
+    ALLOWED_HOSTS.append(hostname_ip)
+except Exception:
+    pass
 
 
 # Application definition
@@ -109,9 +127,24 @@ TEMPLATES = [
     },
 ]
 
+# STATIC_URL = '/static/'
+# STATICFILES_DIRS = [BASE_DIR / 'static']
+# STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+# STATIC_URL = '/static/static/'
+# STATIC_ROOT = '/vol/web/static'
+# MEDIA_URL = '/static/media/'
+# MEDIA_ROOT = '/vol/web/media'
+
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [BASE_DIR / 'static']
-STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATICFILES_DIRS = [
+    BASE_DIR / 'static',
+    BASE_DIR / "quizapp" / "static",
+    ]
+STATIC_ROOT = '/vol/web/static'
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = '/vol/web/media'
 
 
 DATABASES = {
@@ -121,6 +154,19 @@ DATABASES = {
     }
 }
 
+# Database
+# https://docs.djangoproject.com/en/3.2/ref/settings/#databases
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': os.environ.get('DB_NAME'),
+#         'USER': os.environ.get('DB_USER'),
+#         'PASSWORD': os.environ.get('DB_PASS'),
+#         'HOST': os.environ.get('DB_HOST'),
+#         'PORT': os.environ.get('DB_PORT', 5432),
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators

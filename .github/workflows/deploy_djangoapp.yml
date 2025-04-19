@@ -1,0 +1,79 @@
+name: Deploy Django App to Azure VM
+
+on:
+  workflow_dispatch:
+    inputs:
+      create_linux:
+        description: "Create Linux VM"
+        required: true
+        default: "true"
+      resource_group_n:
+        description: "Azure Resource Group Name"
+        required: true
+        default: "quizzapp-vm-rg"
+      location_n:
+        description: "Azure Region"
+        required: true
+        default: "centralindia"
+
+jobs:
+  deploy:
+    name: Deploy to Azure VM
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Azure Login
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Set Variables
+      run: |
+        echo "RESOURCE_GROUP=${{ github.event.inputs.resource_group_n }}" >> $GITHUB_ENV
+        echo "LOCATION=${{ github.event.inputs.location_n }}" >> $GITHUB_ENV
+        echo "VM_USER=azureuser" >> $GITHUB_ENV
+        echo "VM_PASS=${{ secrets.VM_PASS }}" >> $GITHUB_ENV
+        echo "LINUX_VM_NAME=linux-gh-vm" >> $GITHUB_ENV
+        echo "WINDOWS_VM_NAME=windows-gh-vm" >> $GITHUB_ENV
+        echo "WINDOWS_VM_SIZE=Standard_D4s_v3" >> $GITHUB_ENV
+
+    - name: Create Resource Group
+      run: |
+        az group create --name $RESOURCE_GROUP --location $LOCATION
+
+    - name: Set up SSH key
+      uses: webfactory/ssh-agent@v0.8.0
+      with:
+        ssh-private-key: ${{ secrets.AZURE_VM_SSH_KEY }}
+
+    - name: Deploy Linux VM
+      if: ${{ github.event.inputs.create_linux == 'true' }}
+      run: |
+        echo "Deploying Linux VM..."
+
+        az vm create \
+          --resource-group $RESOURCE_GROUP \
+          --name $LINUX_VM_NAME \
+          --image Canonical:0001-com-ubuntu-server-jammy:22_04-lts-gen2:latest \
+          --admin-username $VM_USER \
+          --admin-password "$VM_PASS" \
+          --size Standard_B2s \
+          --authentication-type password \
+          --custom-data install_desktop.sh \
+          --location $LOCATION \
+          --output none
+
+    - name: Copy files to Azure VM
+      run: |
+        rsync -avz --exclude='venv' --exclude='.git' ./ ${{ secrets.AZURE_VM_USERNAME }}@${{ secrets.AZURE_VM_HOST }}:/home/${{ secrets.AZURE_VM_USERNAME }}/quizapp
+
+    - name: SSH into Azure VM and restart Docker
+      run: |
+        ssh ${{ secrets.AZURE_VM_USERNAME }}@${{ secrets.AZURE_VM_HOST }} << 'EOF'
+          cd /home/${{ secrets.AZURE_VM_USERNAME }}/quizapp
+          docker compose -f docker-compose-deploy.yml down
+          docker compose -f docker-compose-deploy.yml up -d --build
+        EOF
