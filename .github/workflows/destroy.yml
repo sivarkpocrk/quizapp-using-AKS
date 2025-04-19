@@ -1,28 +1,25 @@
-name: Destroy
+name: Destory VM Workflow
 
 on:
   workflow_dispatch:
     inputs:
-      environment:
-        type: choice
-        description: Which environment to remove AWS resources for?
-        options:
-          - staging
-          - prod
+      resource_group_n:
+        description: "Azure Resource Group Name"
+        required: true
+        default: "quizzapp-vm-rg"
 
 jobs:
-  destroy:
-    name: Destroy
-    runs-on: ubuntu-22.04
+  cleanup:
+    name: Cleanup Resources
+    runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Terraform Destroy
-        env:
-          AWS_ACCESS_KEY_ID: ${{ vars.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        run: |
-          export TF_WORKSPACE=${{ github.event.inputs.environment }}
-          cd infra/
-          docker compose run --rm terraform -chdir=deploy/ init
-          docker compose run --rm terraform -chdir=deploy/ destroy -auto-approve
+    - name: Azure Login
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Delete Resource Group
+      run: |
+        RESOURCE_GROUP=${{ github.event.inputs.resource_group_n }}
+
+        az group delete --name $RESOURCE_GROUP --yes --no-wait

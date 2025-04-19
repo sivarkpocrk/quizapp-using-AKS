@@ -47,14 +47,13 @@ jobs:
         echo "PUBLIC_KEY=$(cat ~/.ssh/quizapp_key.pub)" >> $GITHUB_ENV
 
     - name: 📎 Upload SSH Key Pair
-      uses: actions/upload-artifact@main
+      uses: actions/upload-artifact@v3
       with:
         name: ssh-key-pair
         path: |
           ~/.ssh/quizapp_key
           ~/.ssh/quizapp_key.pub
         retention-days: 1
-
 
     - name: 🏗️ Create Resource Group
       run: |
@@ -79,14 +78,17 @@ jobs:
       run: |
         VM_IP=$(az vm show -d -g $RESOURCE_GROUP -n $LINUX_VM_NAME --query publicIps -o tsv)
         echo "VM_IP=$VM_IP" >> $GITHUB_ENV
-        echo "::set-output name=vm_ip::$VM_IP"
 
     - name: 🐳 Install Docker and Docker Compose on VM
       run: |
-        ssh -o StrictHostKeyChecking=no -i ~/.ssh/quizapp_key $VM_USER@$VM_IP << 'EOF'
+        ssh -o StrictHostKeyChecking=no -i ~/.ssh/quizapp_key $VM_USER@$VM_IP bash <<EOF
           sudo apt update
-          sudo apt install -y docker.io docker-compose
-          sudo usermod -aG docker $USER
+          sudo apt install -y docker.io curl
+          DOCKER_COMPOSE_VERSION=2.27.0
+          sudo mkdir -p /usr/local/lib/docker/cli-plugins
+          sudo curl -SL https://github.com/docker/compose/releases/download/v\$DOCKER_COMPOSE_VERSION/docker-compose-linux-x86_64 -o /usr/local/lib/docker/cli-plugins/docker-compose
+          sudo chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
+          sudo usermod -aG docker $VM_USER
         EOF
 
     - name: 📦 Copy App Files to Azure VM
@@ -97,8 +99,8 @@ jobs:
 
     - name: 🚀 Deploy Docker Containers
       run: |
-        ssh -o StrictHostKeyChecking=no -i ~/.ssh/quizapp_key $VM_USER@$VM_IP << 'EOF'
-          cd /home/$VM_USER/quizapp
+        ssh -o StrictHostKeyChecking=no -i ~/.ssh/quizapp_key $VM_USER@$VM_IP bash <<EOF
+          cd /home/$VM_USER/quizapp || exit 1
           docker compose -f docker-compose-deploy.yml down || true
           docker compose -f docker-compose-deploy.yml up -d --build
         EOF
