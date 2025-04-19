@@ -37,6 +37,24 @@ jobs:
         echo "VM_USER=azureuser" >> $GITHUB_ENV
         echo "LINUX_VM_NAME=linux-gh-vm" >> $GITHUB_ENV
 
+    - name: 🔑 Generate SSH Key Pair
+      run: |
+        mkdir -p ~/.ssh
+        ssh-keygen -t rsa -b 4096 -f ~/.ssh/quizapp_key -N ""
+        echo "PRIVATE_KEY<<EOF" >> $GITHUB_ENV
+        cat ~/.ssh/quizapp_key >> $GITHUB_ENV
+        echo "EOF" >> $GITHUB_ENV
+        echo "PUBLIC_KEY=$(cat ~/.ssh/quizapp_key.pub)" >> $GITHUB_ENV
+
+    - name: 📦 Upload SSH Keys as Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: ssh-keys
+        path: |
+          ~/.ssh/quizapp_key
+          ~/.ssh/quizapp_key.pub
+
+
     - name: 🏗️ Create Resource Group
       run: |
         az group create --name $RESOURCE_GROUP --location $LOCATION
@@ -50,7 +68,7 @@ jobs:
           --image Canonical:0001-com-ubuntu-server-jammy:22_04-lts-gen2:latest \
           --admin-username $VM_USER \
           --authentication-type ssh \
-          --ssh-key-value "${{ secrets.AZURE_VM_SSH_PUB_KEY }}" \
+          --ssh-key-value "$PUBLIC_KEY" \
           --size Standard_B2s \
           --location $LOCATION \
           --output none
