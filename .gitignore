@@ -1,7 +1,6 @@
 *.pyc
 __pycache__/
 /static/
-.env
 *.log
 *.pid
 *.py[cod]
