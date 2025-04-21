@@ -32,6 +32,18 @@ DEBUG = bool(int(os.environ.get('DEBUG', 0)))
 
 # ALLOWED_HOSTS = ["127.0.0.1"]
 ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    "neotechwave.net",
+    "www.neotechwave.net",
+    "127.0.0.1",
+    "localhost",
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://neotechwave.net",
+    "https://www.neotechwave.net",
+]
+
 ALLOWED_HOSTS.extend(
     filter(
         None,
