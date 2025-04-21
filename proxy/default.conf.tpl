@@ -8,12 +8,15 @@ server {
     }
 
     location / {
-        return 301 https://$host$request_uri;
+        return 301 https://${DOLLAR}host${DOLLAR}request_uri;
+#        return 301 "https://${host}${request_uri}";
     }
 }
 
 server {
     listen 443 ssl;
+    
+#    listen ${LISTEN_PORT};
 
     server_name ${SER_NAME};
 
@@ -22,6 +25,10 @@ server {
 
     ssl_certificate /etc/letsencrypt/live/neotechwave.net/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/neotechwave.net/privkey.pem;
+
+#    location ^~ /.well-known/acme-challenge/ {
+#        root /var/www/certbot;
+#    }
 
     location /static {
         alias /vol/static;

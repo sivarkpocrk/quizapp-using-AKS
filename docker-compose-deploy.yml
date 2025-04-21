@@ -35,7 +35,7 @@ services:
     depends_on:
       - app
     ports:
-      - 80:8000
+      - 80:80
       - 443:443
     volumes:
       - static-data:/vol/static
@@ -45,7 +45,7 @@ services:
 
     environment:
       - SER_NAME=${NGINX_SERVER_NAME}
-      - CRT_DNS=${CRT_DNS_ENV}
+#      - CRT_DNS=${CRT_DNS_ENV}
   certbot:
     image: certbot/certbot
     container_name: certbot
@@ -56,7 +56,7 @@ services:
     command: >
       certbot certonly --webroot --webroot-path=/var/www/certbot
       --email sivanishasa@gmail.com --agree-tos --no-eff-email
-      -d neotechwave.net -d www.neotechwave.net --non-interactive
+      -d neotechwave.net -d www.neotechwave.net --non-interactive --expand
 
 volumes:
   # postgres-data:
