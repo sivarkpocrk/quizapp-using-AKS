@@ -1,0 +1,13 @@
+
+  Id     Duration CommandLine
+  --     -------- -----------
+   1        0.797 try { . "c:\Users\User\AppData\Local\Programs\Microsoft VS Code\resources\app\out\vs\workbench\contrib\terminal…
+   2       50.163 az login --use-device-code
+   3        1.327 az account show -o table
+   4        4.080 az acr show --name mynewacr123 --query id --output tsv
+   5        1.517 az account show -o table --query name#
+   6        1.267 az account show -o table --query name
+   7        1.260 az account list  -o table 
+   8        6.723 az acr list --output table
+   9        0.062 clear
+

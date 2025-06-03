@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: quizapp-static-pvc
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: azurefile-csi  # ✅ Use RWX-compatible class in AKS
+  resources:
+    requests:
+      storage: 1Gi

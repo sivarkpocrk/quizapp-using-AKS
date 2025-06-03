@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: quizapp
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: quizapp
+  template:
+    metadata:
+      labels:
+        app: quizapp
+    spec:
+      containers:
+      - name: quizapp
+        image: mynewacr123.azurecr.io/quizapp-app:latest1
+        ports:
+        - containerPort: 8000
+        envFrom:
+        - secretRef:
+            name: quizapp-secret
+        volumeMounts:
+        - mountPath: /vol/web/static
+          name: static
+        - mountPath: /vol/web/media
+          name: media
+        resources:
+          requests:
+            cpu: "250m"
+            memory: "512Mi"
+          limits:
+            cpu: "500m"
+            memory: "1Gi"
+
+      volumes:                       # ✅ Moved outside of 'containers'
+      - name: static
+        persistentVolumeClaim:
+          claimName: quizapp-static-pvc
+      - name: media
+        persistentVolumeClaim:
+          claimName: quizapp-media-pvc
