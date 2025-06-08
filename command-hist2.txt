@@ -1,0 +1,18 @@
+
+  Id     Duration CommandLine
+  --     -------- -----------
+   1        1.125 try { . "c:\Users\User\AppData\Local\Programs\Microsoft VS Code\resources\app\out\vs\work…
+   2        0.939 kubectl get pods
+   3    13:24.591 kubectl exec -it quizapp-698bb95cf6-698fv -- /bin/sh
+   4        0.087 clear
+   5        1.005 docker build -t mynewacr123.azurecr.io/quizapp-app:latest2 .
+   6     2:42.090 docker build -t mynewacr123.azurecr.io/quizapp-app:latest2 .
+   7        7.341 az acr login --name mynewacr123
+   8        0.006 clear
+   9       19.663 docker push mynewacr123.azurecr.io/quizapp-app:latest2
+  10        0.004 clear
+  11     2:43.403 docker build -t mynewacr123.azurecr.io/quizapp-app:latest3 .
+  12        9.072 docker push mynewacr123.azurecr.io/quizapp-app:latest3
+  13        0.562 kubectl apply -f k8s/base/deployment.yaml
+  14        0.002 clear
+

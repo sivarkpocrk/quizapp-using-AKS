@@ -17,6 +17,13 @@ spec:
   - host: www.neotechwave.net
     http:
       paths:
+      - path: /static/
+        pathType: Prefix
+        backend:
+          service:
+            name: quizapp-service
+            port:
+              number: 80
       - path: /
         pathType: Prefix
         backend:

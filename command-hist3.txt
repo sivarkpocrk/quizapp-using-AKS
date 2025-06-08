@@ -1,0 +1,19 @@
+
+  Id     Duration CommandLine
+  --     -------- -----------
+   1        0.255 try { . "c:\Users\User\AppData\Local\Programs\Microsoft VS Code\resources\app\out\vs\work…
+   2        5.820 kubectl run debugpod --rm -it --image=curlimages/curl --restart=Never -- \
+   3        2.805 curl -i http://quizapp:8000/health
+   4        0.268 kubectl get pod -o wide
+   5        0.274 kubectl get pod quizapp-698bb95cf6-698fv -o jsonpath='{.status.podIP}'
+   6       17.207 curl -i http://10.0.1.48:8000/health
+   7     8:38.164 kubectl run debugpod --rm -it --image=curlimages/curl --restart=Never -- sh
+   8        4.957 kubectl run debugpod --rm -it --image=curlimages/curl --restart=Never -- \
+   9        3.487 kubectl run debugpod --rm -it --image=curlimages/curl --restart=Never -- \
+  10     1:02.396 kubectl exec -it quizapp-698bb95cf6-698fv -- /bin/sh
+  11        0.179 kubectl delete pods
+  12        0.030 clear
+  13        0.307 kubectl get pod -o wide
+  14        0.259 kubectl exec -it quizapp-698bb95cf6-698fv -- /bin/sh
+  15     1:43.944 kubectl exec -it quizapp-c469dd5dd-8gpss  -- /bin/sh
+

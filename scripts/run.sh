@@ -25,8 +25,12 @@ python manage.py migrate
 # ✅ (Optional) Load initial data
 # python manage.py loaddata initial_data.json
 
-# ✅ Start Gunicorn server on port 8000 (or use 9000 if proxy expects that)
 echo "🚀 Starting Gunicorn..."
-gunicorn quizapp.wsgi:application --bind :8000 --workers 4
+gunicorn quizapp.wsgi:application \
+  --bind 0.0.0.0:8000 \
+  --access-logfile - \
+  --error-logfile - \
+  --workers 4
+
 
 #gunicorn --bind :9000 --workers 4 app.wsgi

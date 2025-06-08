@@ -1,0 +1,23 @@
+
+  Id     Duration CommandLine
+  --     -------- -----------
+   1        0.432 try { . "c:\Users\User\AppData\Local\Programs\Microsoft VS Code\resources\app\out\vs\work…
+   2        0.304 kubectl get pods
+   3       12.909 kubectl delete pod quizapp-69fccfb765-j6mvg
+   4        7.053 kubectl delete pods -l app=quizapp
+   5        0.038 clear
+   6        0.307 kubectl get pods
+   7        0.004 clear
+   8        0.319 kubectl get pods
+   9        0.006 clear
+  10        0.420 kubectl get pods
+  11       59.979 kubectl exec -it quizapp-698bb95cf6-zkxl5 -- /bin/sh
+  12        0.002 clear
+  13        0.509 kubectl apply -f k8s/base/deployment.yaml
+  14        0.426 kubectl get deployment quizapp -o=jsonpath='{.spec.template.spec.containers[*].image}'
+  15        0.002 clear
+  16        0.392 kubectl get pods
+  17       19.745 kubectl exec -it quizapp-698bb95cf6-zkxl5 -- /bin/sh
+  18        0.002 clear
+  19        0.301 kubectl get pods
+

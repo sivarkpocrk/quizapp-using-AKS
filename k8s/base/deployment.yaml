@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: quizapp
 spec:
-  replicas: 2
+  replicas: 3
   selector:
     matchLabels:
       app: quizapp
@@ -14,17 +14,39 @@ spec:
     spec:
       containers:
       - name: quizapp
-        image: mynewacr123.azurecr.io/quizapp-app:latest1
+        image: mynewacr123.azurecr.io/quizapp-app:latest-static
         ports:
         - containerPort: 8000
+
+        # ✅ Health probes added below
+        readinessProbe:
+          httpGet:
+            path: /healthz/readiness
+            port: 8000
+            scheme: HTTP
+          initialDelaySeconds: 10
+          periodSeconds: 25
+          failureThreshold: 3
+
+        livenessProbe:
+          httpGet:
+            path: /healthz/liveness
+            port: 8000
+            scheme: HTTP
+          initialDelaySeconds: 10
+          periodSeconds: 20
+          failureThreshold: 3
+
         envFrom:
         - secretRef:
             name: quizapp-secret
+
         volumeMounts:
         - mountPath: /vol/web/static
           name: static
         - mountPath: /vol/web/media
           name: media
+
         resources:
           requests:
             cpu: "250m"
@@ -33,7 +55,7 @@ spec:
             cpu: "500m"
             memory: "1Gi"
 
-      volumes:                       # ✅ Moved outside of 'containers'
+      volumes:
       - name: static
         persistentVolumeClaim:
           claimName: quizapp-static-pvc
